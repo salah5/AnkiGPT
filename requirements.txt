@@ -1,0 +1,5 @@
+# Core dependencies
+pydub==0.25.1          # Audio processing
+genanki==0.13.0        # Anki deck creation
+python-dotenv==1.0.0   # Environment variable management
+syncedlyrics==0.4.2    # Lyrics synchronization

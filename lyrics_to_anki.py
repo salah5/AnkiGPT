@@ -9,9 +9,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Constants moved to top and properly formatted
-MP3_DIRECTORY = "music"
-AUDIO_CLIPS_DIRECTORY = "audio_clips"
-ANKI_DECKS_DIRECTORY = "anki_decks"
+MP3_DIRECTORY = "assets/music"
+AUDIO_CLIPS_DIRECTORY = "assets/audio_clips"
+ANKI_DECKS_DIRECTORY = "assets/anki_decks"
 
 # Load API keys from environment variables
 API_KEYS = {
@@ -196,15 +196,39 @@ def create_anki_deck(song_name, song_lines, translations, audio_clips):
     package.write_to_file(os.path.join(ANKI_DECKS_DIRECTORY, f'{song_name}.apkg'))
     print(f"Created Anki deck for {song_name}")
 
+def validate_environment():
+    """Validate all required environment variables and directories exist"""
+    missing_vars = []
+    for key in ["DEEPSEEK_API_KEY", "OPENAI_API_KEY"]:
+        if not os.getenv(key):
+            missing_vars.append(key)
+    
+    if missing_vars:
+        print("Error: Missing required environment variables:")
+        for var in missing_vars:
+            print(f"- {var}")
+        print("\nPlease create a .env file with these variables.")
+        sys.exit(1)
+
+    # Validate directories exist
+    for directory in [MP3_DIRECTORY, AUDIO_CLIPS_DIRECTORY, ANKI_DECKS_DIRECTORY]:
+        os.makedirs(directory, exist_ok=True)
 
 if __name__ == "__main__":
-    SONG_NAMES = [
-        "“Ma Meilleure Ennemie” - Stromae, Pomme",
-        "Again - Yui",
-        "Departure - Masatoshi Ono",
-        "Kenia OS - Malas Decisiones",
-        "Akuma no Ko - Ai Higuchi"
-    ]
+    # Validate environment before running
+    validate_environment()
+    
+    # Allow command line input for song names
+    if len(sys.argv) > 1:
+        SONG_NAMES = sys.argv[1:]
+    else:
+        SONG_NAMES = [
+            "\"Ma Meilleure Ennemie\" - Stromae, Pomme",
+            "Again - Yui",
+            "Departure - Masatoshi Ono",
+            "Kenia OS - Malas Decisiones",
+            "Akuma no Ko - Ai Higuchi"
+        ]
 
     for song_name in SONG_NAMES:
         # Define the path to the expected Anki deck file
